@@ -1,19 +1,36 @@
-from fastapi import APIRouter, HTTPException, status
-# Importamos los nuevos modelos de sueño
-from app.models.sleep import SleepLogCreate, SleepLogResponse
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from app.services.ai_assistant import AIAssistantService
+from app.services.pdf_parser import PDFParserService
 
 router = APIRouter()
+ai_service = AIAssistantService()
 
-# --- Endpoint de salud / monitoreo ---
-@router.get("/health", status_code=status.HTTP_200_OK)
-def health_check():
-    """Endpoint de estado para verificar que la API está online."""
-    return {"status": "ok", "message": "API activa y funcionando"}
+class ConsultaRequest(BaseModel):
+    pregunta: str
+    sensaciones_diarias: str = "Sin datos adicionales"
 
+@router.post("/ai/chat")
+def chat_asistente_sueno(payload: ConsultaRequest):
+    """Endpoint para chatear con Gemini utilizando el contexto del PDF."""
+    try:
+        respuesta = ai_service.consultar_asistente(
+            pregunta_usuario=payload.pregunta,
+            datos_sueno_usuario=payload.sensaciones_diarias
+        )
+        return {
+            "status": "success",
+            "respuesta_asistente": respuesta
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-# --- Rutas del Asistente de Sueño ---
-@router.post("/sleep-logs", response_model=SleepLogResponse, status_code=status.HTTP_201_CREATED)
-def create_sleep_log(log: SleepLogCreate):
-    """Crea un nuevo registro de sueño para el usuario."""
-    # Aquí llamarás a tu servicio (p. ej., SleepService) para procesar los datos
-    pass
+@router.get("/pdf/contenido")
+def leer_pdf_sueno():
+    """Endpoint opcional para verificar el texto extraído del PDF."""
+    try:
+        parser = PDFParserService(pdf_path="app/data/documento_sueno.pdf")
+        texto = parser.extract_text()
+        return {"status": "success", "longitud": len(texto), "extracto": texto[:300]}
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))

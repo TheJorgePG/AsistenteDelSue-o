@@ -1,6 +1,9 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
+from sqlalchemy import Column, Integer, Float, String, ForeignKey, DateTime
+from sqlalchemy.orm import relationship
+from app.core.database import Base
 
 class SleepLogBase(BaseModel):
     sleep_start: datetime = Field(..., description="Fecha y hora en la que el usuario se durmió")
@@ -21,3 +24,16 @@ class SleepLogResponse(SleepLogBase):
 
     class Config:
         from_attributes = True
+
+class SleepLogModel(Base):
+    __tablename__ = "sleep_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    horas_sueno = Column(Float, nullable=False)
+    calidad_percibida = Column(String, nullable=False)
+    despertares_nocturnos = Column(Integer, default=0)
+    nivel_fatiga_diurna = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    usuario = relationship("UserModel", back_populates="sleep_logs")

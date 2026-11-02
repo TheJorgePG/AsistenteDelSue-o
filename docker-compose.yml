@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-sueno
+    restart: always
+    environment:
+      POSTGRES_USER: usuario_sueno
+      POSTGRES_PASSWORD: password_sueno
+      POSTGRES_DB: sueno_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: mi-asistente
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://usuario_sueno:password_sueno@db:5432/sueno_db
+      - GEMINI_API_KEY
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
