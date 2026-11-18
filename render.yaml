@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: asistente-del-sueno
+    runtime: docker
+    plan: free
+    autoDeployTrigger: off
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: asistente-sueno-db
+          property: connectionString
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: RAG_CONFIDENCE_THRESHOLD
+        value: "0.10"
+      - key: RAG_TOP_K
+        value: "2"
+
+databases:
+  - name: asistente-sueno-db
+    databaseName: sueno_db
+    user: usuario_sueno
+    plan: free

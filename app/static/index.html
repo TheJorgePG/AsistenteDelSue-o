@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f5">
+  <title>Asistente del Sueño</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Asistente del Sueño, inicio">
+      <span class="brand-mark" aria-hidden="true">☾</span>
+      <span>Asistente <span class="brand-light">del Sueño</span></span>
+    </a>
+    <div id="user-info" class="user-info hidden">
+      <span id="user-email-display"></span>
+      <button id="logout-button" class="button button-quiet" type="button">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="auth-section" class="auth-layout">
+      <div class="auth-copy">
+        <p class="eyebrow">DESCANSAR MEJOR, EMPIEZA POR ENTENDER</p>
+        <h1>Un espacio para cuidar tu descanso.</h1>
+        <p>Consulta recomendaciones claras sobre hábitos y salud del sueño, basadas en nuestra guía de referencia.</p>
+      </div>
+      <div class="panel auth-panel">
+        <div class="auth-tabs" role="tablist" aria-label="Acceso">
+          <button id="tab-login" class="auth-tab active" type="button" role="tab">Iniciar sesión</button>
+          <button id="tab-register" class="auth-tab" type="button" role="tab">Crear cuenta</button>
+        </div>
+        <form id="auth-form">
+          <label for="auth-email">Correo electrónico</label>
+          <input id="auth-email" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+          <label for="auth-password">Contraseña</label>
+          <input id="auth-password" type="password" autocomplete="current-password" minlength="8" placeholder="Al menos 8 caracteres" required>
+          <button id="auth-btn" class="button button-primary full-width" type="submit">Iniciar sesión</button>
+          <p id="auth-error" class="notice notice-error hidden" role="alert"></p>
+        </form>
+      </div>
+    </section>
+
+    <section id="app-section" class="app-shell hidden">
+      <section class="progress-dashboard" aria-labelledby="progress-title">
+        <div class="dashboard-title">
+          <div>
+            <p class="eyebrow">TU ESPACIO PERSONAL</p>
+            <h2 id="progress-title">Tu descanso, paso a paso</h2>
+          </div>
+          <button id="download-report" class="button button-outline" type="button">Descargar informe PDF <span aria-hidden="true">↓</span></button>
+        </div>
+
+        <div class="dashboard-forms">
+          <form id="profile-form" class="panel form-panel">
+            <div class="section-title">
+              <div><p class="eyebrow">PERFIL</p><h3>Tu objetivo de descanso</h3></div>
+            </div>
+            <label for="profile-name">Nombre para mostrar</label>
+            <input id="profile-name" type="text" maxlength="60" placeholder="¿Cómo te llamamos?" required>
+            <label for="profile-age">Rango de edad</label>
+            <select id="profile-age" required>
+              <option value="">Selecciona un rango</option>
+              <option value="18-25">18–25 años</option>
+              <option value="26-64">26–64 años</option>
+              <option value="65+">65 años o más</option>
+            </select>
+            <div class="form-pair">
+              <div>
+                <label for="profile-goal">Objetivo por noche</label>
+                <div class="input-suffix"><input id="profile-goal" type="number" min="4" max="12" step="0.5" value="8" required><span>horas</span></div>
+              </div>
+              <div>
+                <label for="profile-timezone">Zona horaria</label>
+                <select id="profile-timezone" required>
+                  <option value="">Selecciona una zona</option>
+                  <option value="Europe/Madrid">Europa — Madrid</option>
+                  <option value="America/Mexico_City">América — Ciudad de México</option>
+                  <option value="America/Bogota">América — Bogotá</option>
+                  <option value="America/Argentina/Buenos_Aires">América — Buenos Aires</option>
+                  <option value="UTC">UTC</option>
+                </select>
+              </div>
+            </div>
+            <button class="button button-primary full-width" type="submit">Guardar perfil</button>
+            <p id="profile-status" class="form-status" role="status"></p>
+          </form>
+
+          <form id="sleep-log-form" class="panel form-panel">
+            <div class="section-title">
+              <div><p class="eyebrow">REGISTRO DIARIO</p><h3>Añade una noche</h3></div>
+              <span class="points-hint">+10 puntos</span>
+            </div>
+            <p class="muted">Los puntos se conceden por registrar el hábito, no por dormir más o menos.</p>
+            <label for="log-date">Fecha de la noche</label>
+            <input id="log-date" type="date" required>
+            <div class="form-pair">
+              <div>
+                <label for="log-hours">Horas dormidas</label>
+                <div class="input-suffix"><input id="log-hours" type="number" min="0.1" max="24" step="0.1" placeholder="7.5" required><span>h</span></div>
+              </div>
+              <div>
+                <label for="log-quality">Calidad percibida</label>
+                <select id="log-quality" required>
+                  <option value="">Elige 1–10</option>
+                  <option value="1">1 — Muy baja</option>
+                  <option value="2">2</option><option value="3">3</option>
+                  <option value="4">4</option><option value="5">5</option>
+                  <option value="6">6</option><option value="7">7</option>
+                  <option value="8">8</option><option value="9">9</option>
+                  <option value="10">10 — Muy buena</option>
+                </select>
+              </div>
+            </div>
+            <label for="log-awakenings">Despertares durante la noche</label>
+            <input id="log-awakenings" type="number" min="0" max="30" step="1" value="0" required>
+            <button class="button button-primary full-width" type="submit">Guardar noche</button>
+            <p id="log-status" class="form-status" role="status"></p>
+          </form>
+        </div>
+
+        <div class="progress-overview">
+          <div class="stat-card panel"><span class="stat-label">Puntos</span><strong id="points-total">0</strong><span class="stat-note">10 por noche registrada</span></div>
+          <div class="stat-card panel"><span class="stat-label">Racha actual</span><strong><span id="streak-total">0</span><small id="streak-unit"> días</small></strong><span class="stat-note">Noches seguidas registradas</span></div>
+          <div class="stat-card panel"><span class="stat-label">Noches registradas</span><strong id="nights-total">0</strong><span class="stat-note">Tu historial personal</span></div>
+        </div>
+
+        <div class="dashboard-lower">
+          <section class="panel chart-panel" aria-labelledby="chart-title">
+            <div class="section-title">
+              <div><p class="eyebrow">ÚLTIMAS NOCHES</p><h3 id="chart-title">Evolución del descanso</h3></div>
+              <span class="chart-legend"><i class="legend-hours"></i> Horas <i class="legend-quality"></i> Calidad</span>
+            </div>
+            <p id="chart-empty" class="muted">Registra tus noches para empezar a ver tu evolución.</p>
+            <div id="sleep-chart" class="sleep-chart"></div>
+            <p class="chart-caption">La línea punteada marca tu objetivo. El gráfico registra datos personales, no es una evaluación médica.</p>
+          </section>
+          <section class="panel badges-panel" aria-labelledby="badges-title">
+            <div class="section-title">
+              <div><p class="eyebrow">HITOS</p><h3 id="badges-title">Tus insignias</h3></div>
+            </div>
+            <p class="muted">Pequeños reconocimientos por mantener el hábito de registrar.</p>
+            <div id="badge-list" class="badge-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <aside class="guide-panel panel">
+          <p class="eyebrow">GUÍA RÁPIDA</p>
+          <h2>¿Por dónde empezamos?</h2>
+          <p class="muted">Elige una pregunta o escribe la tuya. Las respuestas se apoyan en la guía del sueño.</p>
+          <div id="question-list" class="question-list" aria-live="polite"></div>
+          <div class="pagination">
+            <button id="previous-page" class="page-button" type="button" aria-label="Preguntas anteriores">←</button>
+            <span id="page-label"></span>
+            <button id="next-page" class="page-button" type="button" aria-label="Más preguntas">→</button>
+          </div>
+          <p class="fine-print">La información es orientativa y no sustituye la valoración de un profesional sanitario.</p>
+        </aside>
+
+        <section class="chat panel" aria-label="Conversación">
+          <div class="chat-heading">
+            <div>
+              <p class="eyebrow">TU ASISTENTE</p>
+              <h2>Hablemos de tu descanso</h2>
+            </div>
+            <span class="status"><span class="status-dot"></span> Basado en la guía</span>
+          </div>
+          <div id="chat-container" class="messages" aria-live="polite">
+            <article class="message assistant-message">
+              <span class="avatar" aria-hidden="true">S</span>
+              <div class="message-content">
+                <p>Hola. Puedo ayudarte con recomendaciones sobre duración, hábitos y calidad del sueño. ¿Qué te gustaría saber?</p>
+              </div>
+            </article>
+          </div>
+          <form id="chat-form" class="composer">
+            <label class="sr-only" for="user-input">Tu pregunta</label>
+            <input id="user-input" type="text" maxlength="1000" placeholder="Escribe una pregunta sobre tu descanso..." required>
+            <button id="send-button" class="button button-primary" type="submit">Enviar <span aria-hidden="true">↗</span></button>
+          </form>
+        </section>
+      </section>
+    </section>
+  </main>
+  <footer class="site-footer">Asistente del Sueño <span>·</span> Respuestas basadas en una guía de referencia</footer>
+</body>
+</html>
