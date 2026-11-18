@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 import hashlib
 import os
 from app.core.database import get_db
 from app.models.user import UserModel
+from app.api.security import create_access_token
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
@@ -15,11 +16,11 @@ def encriptar_password(password: str) -> str:
 
 class UserRegister(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(..., min_length=8, max_length=128)
 
 class UserLogin(BaseModel):
     email: EmailStr
-    password: str
+    password: str = Field(..., min_length=8, max_length=128)
 
 @router.post("/register")
 def registrar_usuario(user: UserRegister, db: Session = Depends(get_db)):
@@ -44,4 +45,11 @@ def iniciar_sesion(user: UserLogin, db: Session = Depends(get_db)):
     if not db_user or db_user.hashed_password != password_hash:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciales incorrectas")
     
-    return {"status": "success", "message": "Inicio de sesión exitoso", "user_id": db_user.id}
+    return {
+        "status": "success",
+        "message": "Inicio de sesión exitoso",
+        "user_id": db_user.id,
+        "access_token": create_access_token(db_user.id),
+        "token_type": "bearer",
+        "expires_in": 43200,
+    }

@@ -6,9 +6,6 @@ ENV LANG=C.UTF-8
 
 WORKDIR /app
 
-# Instalar git por si tienes dependencias desde GitHub
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
-
 # Copiar e instalar dependencias
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt

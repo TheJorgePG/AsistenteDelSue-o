@@ -1,0 +1,57 @@
+name: CI y despliegue
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests, evaluación RAG y build Docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Instalar dependencias de desarrollo
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Ejecutar tests
+        env:
+          GEMINI_API_KEY: ""
+        run: python -m pytest -q
+
+      - name: Evaluar golden dataset
+        run: python scripts/evaluate_golden_dataset.py
+
+      - name: Construir imagen Docker
+        run: docker build --tag asistente-del-sueno:${{ github.sha }} .
+
+  deploy-render:
+    name: Desplegar en Render
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lanzar despliegue en Render
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "Falta configurar el secreto RENDER_DEPLOY_HOOK_URL en GitHub."
+            exit 1
+          fi
+          curl --fail-with-body --silent --show-error \
+            --request POST "$RENDER_DEPLOY_HOOK_URL"

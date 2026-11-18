@@ -1,29 +1,37 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15-alpine
-    container_name: postgres-sueno
     restart: always
     environment:
       POSTGRES_USER: usuario_sueno
       POSTGRES_PASSWORD: password_sueno
       POSTGRES_DB: sueno_db
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U usuario_sueno -d sueno_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   web:
     build: .
-    container_name: mi-asistente
     ports:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://usuario_sueno:password_sueno@db:5432/sueno_db
       - GEMINI_API_KEY
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-local-development-only-secret}
+      - RAG_CONFIDENCE_THRESHOLD=${RAG_CONFIDENCE_THRESHOLD:-0.10}
+      - RAG_TOP_K=${RAG_TOP_K:-2}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
 volumes:
   postgres_data:

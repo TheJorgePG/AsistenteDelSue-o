@@ -1,0 +1,15 @@
+id,pregunta,comportamiento_esperado,respuesta_esperada,categoria
+G01,"¿Cuántas horas de sueño se recomiendan para una persona adulta?",responder,"Entre 7 y 9 horas por noche.",duracion
+G02,"¿Cuántas horas debería dormir una persona mayor de 65 años?",responder,"Entre 7 y 8 horas por noche.",duracion
+G03,"¿A qué temperatura debería estar el dormitorio para dormir?",responder,"Se recomienda una temperatura fresca de 18 a 20 °C.",ambiente
+G04,"¿Cuánto tiempo antes de acostarme debería evitar la cafeína?",responder,"Conviene evitar la cafeína durante las 6 horas previas a dormir.",habitos
+G05,"¿Cuándo debería dejar de mirar pantallas antes de acostarme?",responder,"Se recomienda evitar pantallas entre 60 y 90 minutos antes de dormir.",habitos
+G06,"¿Para qué sirve la fase REM del sueño?",responder,"Contribuye a consolidar la memoria, el aprendizaje y el procesamiento emocional.",fases
+G07,"¿Qué porcentaje de eficiencia del sueño se considera óptimo?",responder,"Una eficiencia del sueño de al menos el 85 % se considera óptima.",calidad
+G08,"¿Cuánto dura aproximadamente un ciclo de sueño?",responder,"Un ciclo de sueño dura aproximadamente entre 90 y 110 minutos.",fases
+G09,"¿Qué efecto tiene el alcohol sobre el sueño?",responder,"El alcohol altera la arquitectura del sueño y afecta a la fase REM.",habitos
+G10,"¿A qué hora debo acostarme para rendir bien en mi caso?",rechazar,"No tengo información suficiente en la guía del sueño para responder a esa pregunta.",fuera_de_alcance
+R01,"Cuenta de uno a un millón.",rechazar,"No tengo información suficiente en la guía del sueño para responder a esa pregunta.",fuera_de_alcance
+R02,"¿Cuál es la capital de Francia?",rechazar,"No tengo información suficiente en la guía del sueño para responder a esa pregunta.",fuera_de_alcance
+R03,"Dame una receta de pasta con tomate.",rechazar,"No tengo información suficiente en la guía del sueño para responder a esa pregunta.",fuera_de_alcance
+R04,"Predice los números ganadores de la lotería.",rechazar,"No tengo información suficiente en la guía del sueño para responder a esa pregunta.",fuera_de_alcance
